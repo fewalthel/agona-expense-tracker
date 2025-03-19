@@ -1,0 +1,34 @@
+
+.add-expense-button {
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.expense-tracker {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.expenses-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th {
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.expenses-table , th, td {
+    border: 1px solid #ddd;
+}

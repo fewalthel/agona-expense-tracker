@@ -1,0 +1,10 @@
+.expense-container {
+    border: 3px solid palevioletred;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: pink;
+    margin: 10px;
+}
