@@ -9,10 +9,12 @@ interface IExpenseFormProps {
     setExpensesList: (newExpenses: IExpense[]) => void;
     totalCost: number;
     setTotalCost: (newTotalCost: number) => void;
+    expenseIdCount: number;
+    setExpenseIdCount: (newExpenseIdCount: number) => void;
 }
 
 export const ExpenseForm: React.FC<IExpenseFormProps> =
-    ({ isOpen, onClose, expensesList, setExpensesList, totalCost, setTotalCost}: IExpenseFormProps) => {
+    ({ isOpen, onClose, expensesList, setExpensesList, totalCost, setTotalCost, expenseIdCount, setExpenseIdCount}: IExpenseFormProps) => {
 
     function addExpense(event: React.MouseEvent<HTMLButtonElement>): void {
         event.preventDefault();
@@ -32,13 +34,8 @@ export const ExpenseForm: React.FC<IExpenseFormProps> =
             return;
         }
 
-        const formattedDate: string = new Date(date).toLocaleDateString("ru-RU", {
-            day: "numeric",
-            month: "long",
-            year: "numeric"
-        });
-
-        const newExpense: IExpense = {'title': title, 'cost': cost, 'date': formattedDate, 'category': category};
+        const newExpense: IExpense = {'id': expenseIdCount + 1, 'title': title, 'cost': cost, 'date': date, 'category': category};
+        setExpenseIdCount(expenseIdCount + 1);
         setExpensesList([...expensesList, newExpense]);
         setTotalCost(totalCost + cost);
     }
@@ -57,7 +54,7 @@ export const ExpenseForm: React.FC<IExpenseFormProps> =
                         <input type="date" className="expense-date-input" placeholder="дата расхода"/>
                         <select name="expense-category-select" className="expense-category-select">
                             <option value="здоровье">здоровье</option>
-                            <option value="еду">еда</option>
+                            <option value="еда">еда</option>
                             <option value="образование">образование</option>
                             <option value="развлечения">развлечения</option>
                         </select>

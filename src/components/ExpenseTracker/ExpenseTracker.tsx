@@ -4,26 +4,31 @@ import { getExpenses } from "../../api.ts";
 import { ExpenseForm } from "../ExpenseForm/ExpenseForm.tsx";
 import { IExpense } from "../../api.ts";
 import { StatisticsCircle } from "../StatisticsCircle/StatisticsCircle.tsx";
+import { StatisticsTable } from "../StatisticsTable.tsx";
 
 import './index.css';
 
-export interface ICategoryPercentage {
+export interface ICategoryCost { //траты по категориям
     category: string;
-    percentage: number;
+    cost: number;
 }
 
-export function updatedCategoryPercentages(expenses: IExpense[], totalCost: number, expensesStatsByCategories: ICategoryPercentage[]): ICategoryPercentage[] {
-    const categoryTotals: ICategoryPercentage[] = expensesStatsByCategories.map(category => ({...category}));
+function updatedExpenseStatistictsByCategories(expenses: IExpense[]): ICategoryCost[] {
+    const categoryTotals: ICategoryCost[] = [{category: 'здоровье', cost: 0},
+        {category: 'еда', cost: 0},
+        {category: 'образование', cost: 0},
+        {category: 'развлечения', cost: 0}]
 
     expenses.forEach((expense: IExpense) => {
         const index = categoryTotals.findIndex(obj => obj.category === expense.category);
         if (index !== -1) {
             categoryTotals[index] = {
                 ...categoryTotals[index],
-                percentage: categoryTotals[index].percentage + (expense.cost / totalCost * 100)
+                cost: categoryTotals[index].cost + expense.cost
             };
         }
     });
+
     return categoryTotals;
 }
 
@@ -41,11 +46,15 @@ export const ExpenseTracker: React.FC = () => {
     const [loading, setLoading] = useState(true); // Для индикации загрузки
     const [totalCost, setTotalCost] = useState<number>(0); //Общая сумма расходов
     const [isModalOpen, setIsModalOpen] = useState(false); //Для модального окна
-    const [expensesStatsByCategories, setExpensesStatsByCategories] = useState<{category: string, percentage: number}[]>
-      ([{category: 'здоровье', percentage: 0},
-        {category: 'еда', percentage: 0},
-        {category: 'образование', percentage: 0},
-        {category: 'развлечения', percentage: 0}]);
+    const [expensesStatsByCategories, setExpensesStatsByCategories] = useState<ICategoryCost[]>
+      ([{category: 'здоровье', cost: 0},
+        {category: 'еда', cost: 0},
+        {category: 'образование', cost: 0},
+        {category: 'развлечения', cost: 0}]);
+
+    const [expenseIdCount, setExpenseIdCount] = useState<number>(0);
+    const [sortedBy, setSortedBy] = useState<string>('none');
+
 
     useEffect((): void => {
         getExpenses()
@@ -63,20 +72,41 @@ export const ExpenseTracker: React.FC = () => {
             .finally(() => {
                 setLoading(false);
             });
-    });
+    }, []);
 
     useEffect((): void => {
-        console.log('текущий список');
-        console.log(expensesList);
-        setTotalCost(updatedTotalCost(expensesList))
+        setTotalCost(updatedTotalCost(expensesList));
+        setExpenseIdCount(expensesList.length);
+        setExpensesStatsByCategories(updatedExpenseStatistictsByCategories(expensesList));
     }, [expensesList]);
 
     useEffect((): void => {
-        setExpensesStatsByCategories(updatedCategoryPercentages(expensesList, totalCost, expensesStatsByCategories));
-        console.log('текущий список');
-        console.log(expensesList);
-    }, [totalCost]);
+        if (sortedBy == 'none') {
+            const sortedList: IExpense[] = [...expensesList].sort((a: IExpense, b: IExpense) => {
+                return a.id - b.id
+            });
+            setExpensesList(sortedList);
+        }
+        if (sortedBy == 'date') {
+            const sortedList: IExpense[] = [...expensesList].sort((a: IExpense, b: IExpense) => {
+                return Date.parse(a.date) - Date.parse(b.date)
+            });
+            setExpensesList(sortedList);
+        }
+        if (sortedBy == 'cost-up') {
+            const sortedList: IExpense[]  = [...expensesList].sort((a: IExpense, b: IExpense) => {
+                return a.cost - b.cost
+            });
+            setExpensesList(sortedList);
+        }
 
+        if (sortedBy == 'cost-down') {
+            const sortedList: IExpense[]  = [...expensesList].sort((a: IExpense, b: IExpense) => {
+                return b.cost - a.cost
+            });
+            setExpensesList(sortedList);
+        }
+    }, [sortedBy]);
 
     if (loading) {
         return <div>Загрузка...</div>;
@@ -86,37 +116,33 @@ export const ExpenseTracker: React.FC = () => {
     }
 
     return (
-    <div className='expense-tracker'>
+        <div className='expense-tracker'>
 
-        <StatisticsCircle data={[{ color: '#fe9197', percent: expensesStatsByCategories[0].percentage },
-            { color: '#f19ca9', percent: expensesStatsByCategories[1].percentage },
-            { color: '#FDBDBA', percent: expensesStatsByCategories[2].percentage },
-            { color: '#ffcad7', percent: expensesStatsByCategories[3].percentage }]}/>
+            <StatisticsCircle data={[{
+                color: '#fe9197', percent: expensesStatsByCategories[0].cost / totalCost * 100},
+                {color: '#f19ca9', percent: expensesStatsByCategories[1].cost / totalCost * 100},
+                {color: '#FDBDBA', percent: expensesStatsByCategories[2].cost / totalCost * 100 },
+                { color: '#ffcad7', percent: expensesStatsByCategories[3].cost / totalCost * 100 }]}/>
 
         <strong>Общая сумма расходов: {totalCost} руб.</strong>
-        <table className="expenses-table">
-                <thead>
-                <tr>
-                    <td style={{ backgroundColor: "#fe9197" }}>здоровье</td>
-                    <td style={{ backgroundColor: "#f19ca9" }}>еда</td>
-                    <td style={{ backgroundColor: "#FDBDBA" }}>образование</td>
-                    <td style={{ backgroundColor: "#ffcad7" }}>развлечения</td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{expensesStatsByCategories[0].percentage / 100 * totalCost} руб.</td>
-                    <td>{expensesStatsByCategories[1].percentage  / 100 * totalCost} руб.</td>
-                    <td>{expensesStatsByCategories[2].percentage  / 100 * totalCost} руб.</td>
-                    <td>{expensesStatsByCategories[3].percentage  / 100 * totalCost} руб.</td>
-                </tr>
-                </tbody>
-            </table>
+        <StatisticsTable expensesStatsByCategories={expensesStatsByCategories}/>
+
+            <div className="sorting-container">
+                <p>Сортировать по:</p>
+
+                <select name="sorted-by" className="sorted-by" onChange={(e) => setSortedBy(e.target.value)}>
+                    <option value="none">не сортировать</option>
+                    <option value="date">дате</option>
+                    <option value="cost-up">возрастанию расходов</option>
+                    <option value="cost-down">убыванию расходов</option>
+                </select>
+            </div>
 
             <button onClick={openModal} className="add-expense-button">Добавить расход</button>
             <ExpenseForm isOpen={isModalOpen} onClose={closeModal}
                          expensesList={expensesList} setExpensesList={setExpensesList}
-                         totalCost={totalCost} setTotalCost={setTotalCost}/>
+                         totalCost={totalCost} setTotalCost={setTotalCost}
+                         expenseIdCount={expenseIdCount} setExpenseIdCount={setExpenseIdCount}/>
 
             <div className="expense-tracker">
                 {expensesList.map((expense: IExpense) => (

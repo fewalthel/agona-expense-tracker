@@ -4,12 +4,13 @@ export interface IExpense {
     cost: number; //размер расхода в рублях
     date: string; //дата добавления расхода
     category: string; //категория
+    id: number;
 }
 
 const expenses: IExpense[] = [
-    {"title": "Продукты", "cost": 1500, "date": "8 марта 2025 г.", "category": 'еда'},
-    {"title": "Кино", "cost": 800, "date": "14 февраля 2025 г.", "category": "развлечения"},
-    {"title": "Покупка методички", "cost": 500, "date": "20 января 2025 г.", "category": "образование"}
+    {"id": 1, "title": "Продукты", "cost": 1500, "date": "2025-03-08", "category": 'еда'},
+    {"id": 2, "title": "Кино", "cost": 300, "date": "2025-02-14", "category": "развлечения"},
+    {"id": 3, "title": "Покупка методички", "cost": 500, "date": "2025-05-20", "category": "образование"}
 ];
 
 export const getExpenses= (): Promise<IExpense[] | null> => {

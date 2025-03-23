@@ -32,3 +32,9 @@ td {
 .expenses-table , th, td {
     border: 1px solid #ddd;
 }
+
+.sorting-container {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
