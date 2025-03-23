@@ -8,9 +8,9 @@ export interface IExpense {
 }
 
 const expenses: IExpense[] = [
-    {"id": 1, "title": "Продукты", "cost": 1500, "date": "2025-03-08", "category": 'еда'},
+    {"id": 1, "title": "Продукты", "cost": 1500, "date": "2025-03-08", "category": 'питание'},
     {"id": 2, "title": "Кино", "cost": 300, "date": "2025-02-14", "category": "развлечения"},
-    {"id": 3, "title": "Покупка методички", "cost": 500, "date": "2025-05-20", "category": "образование"}
+    {"id": 3, "title": "Репетитор", "cost": 500, "date": "2025-05-20", "category": "образование"}
 ];
 
 export const getExpenses= (): Promise<IExpense[] | null> => {

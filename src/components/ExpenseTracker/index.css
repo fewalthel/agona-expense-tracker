@@ -33,8 +33,15 @@ td {
     border: 1px solid #ddd;
 }
 
-.sorting-container {
+.sorting-container, .theme-container{
     display: flex;
     justify-content: space-between;
+    width: 40%;
+}
+
+.settings-container {
+    display: flex;
+    justify-content: space-around;
     padding-bottom: 20px;
+    width: 50vw;
 }

@@ -6,9 +6,10 @@ import { ExpenseEditForm } from "../ExpenseEditForm/ExpenseEditForm.tsx";
 export interface IExpenseProps extends IExpense{
     expensesList: IExpense[];
     setExpensesList: (newExpenses: IExpense[]) => void;
+    color: string
 }
 
-export const Expense: React.FC <IExpenseProps> = ({id, title, cost, date, category, expensesList, setExpensesList}: IExpenseProps) => {
+export const Expense: React.FC <IExpenseProps> = ({id, title, cost, date, category, expensesList, setExpensesList, color}: IExpenseProps) => {
     const [expenseState, setExpenseState] = useState<string>('view');
 
     function removeExpense(event: React.MouseEvent<HTMLButtonElement>): void {
@@ -36,19 +37,22 @@ export const Expense: React.FC <IExpenseProps> = ({id, title, cost, date, catego
 
     if (expenseState == 'view') {
         return (
-        <div className="expense-container">
+        <div className="expense-container" style={{backgroundColor: color}}>
             <button value={id} onClick={removeExpense}>X</button>
             <button value={id} onClick={editExpense}>edit</button>
 
-            <strong>Название расхода: {title}</strong>
-            <p>Сумма расхода: {cost} руб.</p>
-            <p>Дата расхода: {formattedDate(date)}</p>
-            <p>Категория: {category}</p>
+            <div className="expense-info-container">
+                <strong>Название расхода: {title}</strong>
+                <p>Сумма расхода: {cost} руб.</p>
+                <p>Дата расхода: {formattedDate(date)}</p>
+                <p>Категория: {category}</p>
+            </div>
         </div>
-    )
-    } if (expenseState == 'edit') {
+        )
+    }
+    if (expenseState == 'edit') {
         return (
-            <ExpenseEditForm id={id} title={title} cost={cost} date={date} category={category} expensesList={expensesList} setExpensesList={setExpensesList} setExpenseState={setExpenseState}/>
+            <ExpenseEditForm id={id} title={title} cost={cost} date={date} category={category} expensesList={expensesList} setExpensesList={setExpensesList} setExpenseState={setExpenseState} color={color}/>
         )
     }
 }

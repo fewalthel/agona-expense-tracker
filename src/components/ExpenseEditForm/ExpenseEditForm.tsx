@@ -11,9 +11,10 @@ interface IExpenseEditFormProps {
     expensesList: IExpense[];
     setExpensesList: (newExpenses: IExpense[]) => void;
     setExpenseState: (newState: string) => void;
+    color: string
 }
 
-export const ExpenseEditForm: React.FC<IExpenseEditFormProps> = ({id, title, cost, date, category, expensesList, setExpensesList, setExpenseState}: IExpenseEditFormProps) => {
+export const ExpenseEditForm: React.FC<IExpenseEditFormProps> = ({id, title, cost, date, category, expensesList, setExpensesList, setExpenseState, color}: IExpenseEditFormProps) => {
 
     function saveChanges(event: React.MouseEvent<HTMLButtonElement>): void {
         event.preventDefault();
@@ -47,7 +48,7 @@ export const ExpenseEditForm: React.FC<IExpenseEditFormProps> = ({id, title, cos
     }
 
     return (
-        <div className="expense-edit-form">
+        <div className="expense-edit-form" style={{background: color}}>
             <form>
                 <strong>Редактирование расхода</strong>
                 <input type="text" className="expense-title-input" placeholder="название расхода" defaultValue={title}/>
