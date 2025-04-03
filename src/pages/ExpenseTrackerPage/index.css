@@ -1,0 +1,12 @@
+.expenses-container {
+    width: 49%;
+    box-sizing: border-box;
+    height: 94vh;
+    overflow: scroll;
+}
+
+.expense-tracker {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
