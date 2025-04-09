@@ -1,0 +1,20 @@
+.control-panel {
+    border-radius: 3vw;
+    box-shadow: 0 0 3vw lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 49%;
+    box-sizing: border-box;
+    height: 94vh;
+}
+
+.control-panel > *{
+    padding: 3%;
+}
+
+.add-expense-button {
+    border: none;
+    border-radius: 3vw;
+    width: 60%;
+}

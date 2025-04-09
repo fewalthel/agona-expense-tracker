@@ -1,0 +1,13 @@
+td {
+    text-align: center;
+    padding: 0.5%;
+    width: 11vw;
+}
+
+.expenses-table {
+    border-collapse: collapse;
+}
+
+.expenses-table , th, td {
+    border: 0.1vw solid #ddd;
+}
